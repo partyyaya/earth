@@ -28,7 +28,7 @@ public class ToCsv {
                  //int value = Integer.parseInt(last);//如果是数值，可以转化为数值
                  //System.out.println(item[1]); 
              } 
-             System.out.println(list.get(0).getPosition());
+             System.out.println(list.get(0).getNumber());//最新的資料會放最後面
          } catch (Exception e) { 
              e.printStackTrace(); 
          }
