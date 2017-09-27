@@ -24,10 +24,9 @@ public class database {
 		prop.setProperty("password", "root");
 		
 		
-		String insql = "INSERT INTO data(number,date,lon,lat,scale,depth,position) values(?,?,?,?,?,?,?)";
-		
+		String insql = "INSERT INTO data(number,date,lon,lat,scale,depth,position) values(?,?,?,?,?,?,?)";		
 		try (
-				BufferedReader reader = new BufferedReader(new FileReader("C:/Users/06092681/Desktop/data/10.csv"));//换成你的文件名
+				BufferedReader reader = new BufferedReader(new FileReader("C:/Users/06092681/Desktop/data/1995.csv"));//换成你的文件名
 				Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3307/earthquake?useUnicode=true&characterEncoding=UTF-8",prop);
 				//輸入中文資料須在後面加上?useUnicode=true&characterEncoding=UTF-8
 				PreparedStatement pstmt=conn.prepareStatement(insql);
