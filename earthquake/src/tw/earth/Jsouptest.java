@@ -1,6 +1,12 @@
 package tw.earth;
 
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.LinkedList;
+import java.util.Properties;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -13,27 +19,45 @@ import org.jsoup.select.Elements;
  * */
 public class Jsouptest {
 		
-	public static void main(String[] args) {
-		//解析html
-		
+	public static void main(String[] args) {	
 		Document doc = null;
+		LinkedList<quakedata> list = new LinkedList<>();//使用list存放資料
+		
+		try {			
+			Class.forName("com.mysql.jdbc.Driver");		
+		} catch (Exception e) {
+			System.out.println(e);
+		}	
+		Properties prop = new Properties();
+		prop.setProperty("user", "root");
+		prop.setProperty("password", "root");
+				
+		String insql = "INSERT INTO data(number,date,lon,lat,scale,depth,position) values(?,?,?,?,?,?,?)";
+		String sql = "SELECT * FROM data where date like ?";
+		
 		try {
+			Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3307/earthquake?useUnicode=true&characterEncoding=UTF-8",prop);
+			 //輸入中文資料須在後面加上?useUnicode=true&characterEncoding=UTF-8
+			PreparedStatement pstmt=conn.prepareStatement(insql);
+			PreparedStatement pstmt2=conn.prepareStatement(sql);
+			/*-----jsoup預備程序-----*/
 			doc = Jsoup.connect("http://scweb.cwb.gov.tw/Page.aspx?ItemId=20&loc=tw&adv=1").timeout(5000).get();//設定超時時間
-			Element table = doc.select("table").get(1);
-			
+						
 			/*--------取出年分資料-------------*/
 			Elements selected = doc.select("select option[selected]");
 			Element year = selected.get(0);
 			String yt = year.text();
 	    	System.out.println(yt);
 			
-			/*--------取出table資料-----------*/			
+			/*--------取出table資料-----------*/
+	    	Element table = doc.select("table").get(1);
 			Elements rows = table.select("tr");
 			//System.out.println( rows.size());
 			for (int i = 1; i < rows.size(); i++) { //first row is the col names so skip it.
 				//System.out.println( rows.size());
 			    Element row = rows.get(i);
 			    Elements cols = row.select("td");
+			    quakedata data = new quakedata();//使用model存取
 			    for (int j = 0; j < cols.size(); j++) {//取出所有td
 			    	//System.out.println(cols.size());
 			    	Element col = cols.get(j);
@@ -42,6 +66,7 @@ public class Jsouptest {
 			    		//System.out.println(as.size());    		
 				    	Element a = as.get(k);
 				    	String Text = a.text();
+				    	/*---------轉換資料庫時間格式--------*/
 				    	if(j==1) {
 				    		Text=Text.replaceFirst("月","/");
 				    		Text=Text.replaceFirst("時",":");
@@ -55,23 +80,53 @@ public class Jsouptest {
 					    	}else {
 					    		if((Integer.parseInt(Text.substring(5,7)))>=10){
 						    		Text=Text.substring(0,4)+" 上午 "+(Integer.parseInt(Text.substring(5,7)))+Text.substring(7,13);
-						    		}else {
-						    		Text=Text.substring(0,4)+" 上午 0"+(Integer.parseInt(Text.substring(5,7)))+Text.substring(7,13);	
-						    		}
-					    	}				    	
+					    		}else {
+					    		Text=Text.substring(0,4)+" 上午 0"+(Integer.parseInt(Text.substring(5,7)))+Text.substring(7,13);	
+					    		}
+					    	}					    
 					    	Text=yt+"/"+Text;
+				    	}
+				    	/*----------------------------*/
+				    	
+				    	/*---------將資料存入集合--------*/
+				    	switch(j) {
+				    		case 0:data.setNumber(Text);break;
+				    		case 1:data.setDate(Text);break;
+				    		case 2:data.setLon(Text);break;
+				    		case 3:data.setLat(Text);break;
+				    		case 4:data.setScale(Text);break;
+				    		case 5:data.setDepth(Text);break;
+				    		case 6:data.setPosition(Text);break;
 				    	}
 				    	System.out.print(Text+",");
 				    }
 			    }
 			    System.out.println();
+			    list.add(data);			
+			}
+			System.out.println(list.get(0).getDate());
+			for(int p=0;p<=(list.size()-1);p++) {//檢查時間->資料是否重複
+				pstmt2.setString(1,list.get(p).getDate());
+				ResultSet rs = pstmt2.executeQuery();
+				if(rs.next()) {//若有重複
+					continue;
+				}else {
+					pstmt.setString(1,list.get(p).getNumber());
+	            	pstmt.setString(2,list.get(p).getDate());
+					pstmt.setString(3,list.get(p).getLon());
+					pstmt.setString(4,list.get(p).getLat());
+					pstmt.setString(5,list.get(p).getScale());
+					pstmt.setString(6,list.get(p).getDepth());
+					pstmt.setString(7,list.get(p).getPosition());
+					pstmt.execute();
+				}
 			}
 			/*--------取出table資料-----------*/
 //			  String linkHref = link.attr("href");
 //			  String linkText = link.text();
 //			  System.out.println(linkText);
 			
-		} catch (IOException e) {
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
