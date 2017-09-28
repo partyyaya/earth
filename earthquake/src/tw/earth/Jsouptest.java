@@ -36,7 +36,7 @@ public class Jsouptest extends TimerTask{
 		prop.setProperty("user", "root");
 		prop.setProperty("password", "root");
 				
-		String insql = "INSERT INTO data(number,date,lon,lat,scale,depth,position) values(?,?,?,?,?,?,?)";
+		String insql = "INSERT INTO data(number,date,lon,lat,depth,scale,position) values(?,?,?,?,?,?,?)";
 		String sql = "SELECT * FROM data where date like ?";
 		
 		try {
@@ -75,17 +75,25 @@ public class Jsouptest extends TimerTask{
 				    		Text=Text.replaceFirst("月","/");
 				    		Text=Text.replaceFirst("時",":");
 					    	Text=Text.replaceFirst("分",":00");				    	
-					    	if(Integer.parseInt(Text.substring(5,7))>=13) {
+					    	if(Integer.parseInt(Text.substring(5,7))>=12) {
 					    		if((Integer.parseInt(Text.substring(5,7))-12)>=10){
-					    		Text=Text.substring(0,4)+" 下午 "+(Integer.parseInt(Text.substring(5,7))-12)+Text.substring(7,13);
+					    		Text=Text.substring(0,2)+(Integer.parseInt(Text.substring(2,4)))+" 下午 "+(Integer.parseInt(Text.substring(5,7))-12)+Text.substring(7,13);
 					    		}else {
-					    		Text=Text.substring(0,4)+" 下午 0"+(Integer.parseInt(Text.substring(5,7))-12)+Text.substring(7,13);	
+					    			if((Integer.parseInt(Text.substring(5,7))-12)==0){
+							    		Text=Text.substring(0,2)+(Integer.parseInt(Text.substring(2,4)))+" 下午 12"+Text.substring(7,13);	
+					    			}else {
+					    		Text=Text.substring(0,2)+(Integer.parseInt(Text.substring(2,4)))+" 下午 0"+(Integer.parseInt(Text.substring(5,7))-12)+Text.substring(7,13);	
+					    			}
 					    		}
 					    	}else {
 					    		if((Integer.parseInt(Text.substring(5,7)))>=10){
-						    		Text=Text.substring(0,4)+" 上午 "+(Integer.parseInt(Text.substring(5,7)))+Text.substring(7,13);
+						    		Text=Text.substring(0,2)+(Integer.parseInt(Text.substring(2,4)))+" 上午 "+(Integer.parseInt(Text.substring(5,7)))+Text.substring(7,13);
 					    		}else {
-					    		Text=Text.substring(0,4)+" 上午 0"+(Integer.parseInt(Text.substring(5,7)))+Text.substring(7,13);	
+					    			if((Integer.parseInt(Text.substring(5,7)))==0){
+							    		Text=Text.substring(0,2)+(Integer.parseInt(Text.substring(2,4)))+" 上午 12"+Text.substring(7,13);	
+					    			}else {
+					    		Text=Text.substring(0,2)+(Integer.parseInt(Text.substring(2,4)))+" 上午 0"+(Integer.parseInt(Text.substring(5,7)))+Text.substring(7,13);	
+					    			}
 					    		}
 					    	}					    
 					    	Text=yt+"/"+Text;
@@ -119,8 +127,8 @@ public class Jsouptest extends TimerTask{
 	            	pstmt.setString(2,list.get(p).getDate());
 					pstmt.setString(3,list.get(p).getLon());
 					pstmt.setString(4,list.get(p).getLat());
-					pstmt.setString(5,list.get(p).getScale());
-					pstmt.setString(6,list.get(p).getDepth());
+					pstmt.setString(5,list.get(p).getDepth());
+					pstmt.setString(6,list.get(p).getScale());
 					pstmt.setString(7,list.get(p).getPosition());
 					pstmt.execute();
 				}
