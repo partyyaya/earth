@@ -145,7 +145,7 @@ public class Jsouptest extends TimerTask{
 				//第一個參數為"欲執行的工作",會呼叫對應的run() method
 				//第二個參數為程式啟動後,"延遲"指定的毫秒數後"第一次"執行該工作
 				//第三個參數為每間隔多少毫秒執行該工作
-				timer.schedule(new Jsouptest(), 1000, 1000*60*60*24);//每一天定期更新一次
+				timer.schedule(new Jsouptest(), 1000, 1000*60*60);//每一天定期更新一次
 	}
 
 }
