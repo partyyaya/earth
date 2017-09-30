@@ -38,28 +38,28 @@ public class ToCsv {
                  quakedata data = new quakedata();
                  data.setNumber(item[0]);
                  //System.out.println(item[0]);
-                 data.setDate(item[1]);
-                 data.setLon(item[2]);
-                 data.setLat(item[3]);
-                 data.setScale(item[4]);
-                 data.setDepth(item[5]);
-                 data.setPosition(item[6]);
-                 list.add(data);
+//                 data.setDate(item[1]);
+//                 data.setLon(item[2]);
+//                 data.setLat(item[3]);
+//                 data.setScale(item[4]);
+//                 data.setDepth(item[5]);
+//                 data.setPosition(item[6]);
+//                 list.add(data);
                  //String last = item[item.length-1];//这就是你要的数据了
                  //int value = Integer.parseInt(last);//如果是数值，可以转化为数值
                  //System.out.println(item[1]); 
              }
-             for(int i=(list.size()-1);i>=0;i--) {
-            	pstmt.setString(1,list.get(i).getNumber());
-            	pstmt.setString(2,list.get(i).getDate());
-				pstmt.setString(3,list.get(i).getLon());
-				pstmt.setString(4,list.get(i).getLat());
-				pstmt.setString(5,list.get(i).getScale());
-				pstmt.setString(6,list.get(i).getDepth());
-				pstmt.setString(7,list.get(i).getPosition());
-				pstmt.execute();
-            	//System.out.println(i);
-             }
+//             for(int i=(list.size()-1);i>=0;i--) {
+//            	pstmt.setString(1,list.get(i).getNumber());
+//            	pstmt.setString(2,list.get(i).getDate());
+//				pstmt.setString(3,list.get(i).getLon());
+//				pstmt.setString(4,list.get(i).getLat());
+//				pstmt.setString(5,list.get(i).getScale());
+//				pstmt.setString(6,list.get(i).getDepth());
+//				pstmt.setString(7,list.get(i).getPosition());
+//				pstmt.execute();
+//            	//System.out.println(i);
+//             }
              //System.out.println((list.size()-1));
              //System.out.println(list.get(list.size()-1).getNumber());//list.get(list.size()-1)為第一筆
          } catch (Exception e) { 
