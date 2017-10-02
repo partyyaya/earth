@@ -107,7 +107,8 @@ public class Jsouptest extends TimerTask{
 			}
 			System.out.println(list.get(0).getDate());
 			for(int p=0;p<=(list.size()-1);p++) {//檢查時間->資料是否重複
-				pstmt2.setString(1,list.get(p).getDate());
+				System.out.println(list.get(p).getDate());
+				pstmt2.setString(1,list.get(p).getDate()+"%");
 				ResultSet rs = pstmt2.executeQuery();
 				if(rs.next()) {//若有重複
 					continue;
